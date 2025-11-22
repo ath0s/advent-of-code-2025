@@ -18,7 +18,7 @@ internal class Binary(
         bits[index]
 
     operator fun not() =
-        Binary(bits.map { !it }.toTypedArray())
+        Binary(bits.mapToArray { !it })
 
     override fun iterator() =
         bits.iterator()
@@ -28,7 +28,7 @@ internal fun Collection<Bit>.toBinary() =
     Binary(toTypedArray())
 
 internal fun String.toBinary() =
-    Binary(map { it.toBit() }.toTypedArray())
+    Binary(mapToArray { it.toBit() })
 
 internal fun Path.readBinaries() =
     readLines().map { it.toBinary() }

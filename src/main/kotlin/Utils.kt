@@ -43,6 +43,15 @@ fun <T> Set<T>.filter(predicate: (T) -> Boolean): Set<T> =
 fun <K, V> Iterable<Pair<K, V>>.toMutableMap() =
     toMap(mutableMapOf())
 
+inline fun <T, reified R> List<T>.mapToArray(transform: (T) -> R) =
+    Array(size) { transform(get(it)) }
+
+inline fun <reified R> CharSequence.mapToArray(transform: (Char) -> R) =
+    Array(length) { transform(get(it)) }
+
+inline fun <T, reified R> Array<T>.mapToArray(transform: (T) -> R) =
+    Array(size) { transform(get(it)) }
+
 fun <T> List<T>.allPairs(): List<Pair<T, T>> =
     dropLast(1).flatMapIndexed { index, element -> drop(index + 1).map { element to it } }
 

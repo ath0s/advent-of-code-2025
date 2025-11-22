@@ -5,7 +5,7 @@ fun <T> calculateShortestPathFromSource(source: Node<T>) {
     val settledNodes = mutableSetOf<Node<T>>()
     val unsettledNodes = mutableSetOf(source)
 
-    while (unsettledNodes.size != 0) {
+    while (unsettledNodes.isNotEmpty()) {
         val currentNode = getLowestDistanceNode(unsettledNodes)
         unsettledNodes -= currentNode
         for ((adjacentNode, edgeWeigh) in currentNode.adjacentNodes) {

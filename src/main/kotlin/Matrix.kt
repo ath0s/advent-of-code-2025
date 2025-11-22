@@ -26,14 +26,10 @@ val <T> Matrix<T>.width
  * Interpret [this] as a filename and parse its contents to a matrix
  */
 internal inline fun <reified T> Path.parseMatrix(charTransformer: (Char) -> T): Matrix<T> =
-        readLines()
-        .map { it.map(charTransformer).toTypedArray() }
-        .toTypedArray()
+    readLines().mapToArray { it.mapToArray(charTransformer) }
 
 internal inline fun <reified T> String.parseMatrix(charTransformer: (Char) -> T): Matrix<T> =
-    lines()
-        .map { it.map(charTransformer).toTypedArray() }
-        .toTypedArray()
+    lines().mapToArray { it.mapToArray(charTransformer) }
 
 fun Path.parseMatrix() =
     parseMatrix { it }
