@@ -1,12 +1,38 @@
 import Day01.Rotation.Left
 import Day01.Rotation.Right
 import kotlin.io.path.readLines
+import kotlin.math.absoluteValue
 
 class Day01 : Day {
     private val start = 50
 
     override fun partOne(filename: String, verbose: Boolean): Int {
-        val rotations = filename.asPath().readLines().map { line ->
+        val rotations = filename.parseRotations(verbose)
+
+        return rotations
+            .map { it.movement }
+            .runningFold(start, Int::plus)
+            .count { it % 100 == 0 }
+    }
+
+    override fun partTwo(filename: String, verbose: Boolean): Any {
+        val rotations = filename.parseRotations(verbose)
+
+        return rotations
+            .flatMap {
+                (1..(it.movement).absoluteValue).map { _ ->
+                    when(it) {
+                        is Left -> -1
+                        is Right -> 1
+                    }
+                }
+            }
+            .runningFold(start, Int::plus)
+            .count { it % 100 == 0 }
+    }
+
+    private fun String.parseRotations(verbose: Boolean): List<Rotation> {
+        val rotations = asPath().readLines().map { line ->
             when (line.first()) {
                 'L' -> Left(line.drop(1).toInt())
                 'R' -> Right(line.drop(1).toInt())
@@ -20,55 +46,19 @@ class Day01 : Day {
             }
         }
 
-        var current = start
-
-        if (verbose) {
-            println("The dial starts by pointing at $current")
-        }
-
-        var zeroCount = 0
-        rotations.forEach { rotation ->
-            current = rotation.rotate(current)
-            if (verbose) {
-                println("The dial is rotated $rotation to point at $current")
-            }
-            if (current == 0) {
-                zeroCount++
-            }
-        }
-
-        return zeroCount
-    }
-
-    override fun partTwo(filename: String, verbose: Boolean): Any {
-        TODO("Not yet implemented")
+        return rotations
     }
 
     private sealed interface Rotation {
-        fun rotate(current: Int): Int
+        val movement: Int
 
-        data class Left(private val steps: Int) : Rotation {
-            override fun rotate(current: Int): Int {
-                var next = current - steps
-                while (next < 0) {
-                    next += 100
-                }
-                return next
-            }
-
-            override fun toString() = "L$steps"
+        data class Left(val distance: Int) : Rotation {
+            override val movement = -distance
+            override fun toString() = "L$distance"
         }
 
-        data class Right(private val steps: Int) : Rotation {
-            override fun rotate(current: Int): Int {
-                var next = current + steps
-                while (next > 99) {
-                    next -= 100
-                }
-                return next
-            }
-
-            override fun toString() = "R$steps"
+        data class Right(override val movement: Int) : Rotation {
+            override fun toString() = "R$movement"
         }
     }
 
