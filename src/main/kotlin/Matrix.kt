@@ -31,10 +31,16 @@ internal inline fun <reified T> Path.parseMatrix(charTransformer: (Char) -> T): 
 internal inline fun <reified T> String.parseMatrix(charTransformer: (Char) -> T): Matrix<T> =
     lines().mapToArray { it.mapToArray(charTransformer) }
 
+internal inline fun <reified T> List<String>.parseMatrix(charTransformer: (Char) -> T): Matrix<T> =
+    mapToArray { it.mapToArray(charTransformer) }
+
 fun Path.parseMatrix() =
     parseMatrix { it }
 
 fun String.parseMatrix() =
+    parseMatrix { it }
+
+fun List<String>.parseMatrix() =
     parseMatrix { it }
 
 fun <T> Matrix<T>.getOrthogonalNeighbors(coordinate: Coordinate) =

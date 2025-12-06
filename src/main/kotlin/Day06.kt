@@ -1,18 +1,38 @@
 import kotlin.io.path.readLines
 
 
-
 class Day06 : Day {
-    override fun partOne(filename: String, verbose: Boolean): Long {
-        val lines = filename.asPath().readLines()
-        val numbers = lines.dropLast(1)
-            .mapToArray { line ->
+    override fun partOne(filename: String, verbose: Boolean): Long =
+        calculate(filename, verbose) { lines ->
+            lines.mapToArray { line ->
                 Regex("""\d+""")
                     .findAll(line)
                     .map { it.value.toLong() }
                     .toList()
                     .toTypedArray()
             }.rotate()
+        }
+
+    override fun partTwo(filename: String, verbose: Boolean): Long =
+        calculate(filename, verbose) { lines ->
+            val maxLength = lines.maxOf { it.length }
+            lines.map { it.padEnd(maxLength) }
+                .parseMatrix()
+                .rotate()
+                .fold(mutableListOf(mutableListOf<Long>())) { problems, chars ->
+                    val line = String(chars.toCharArray())
+                    if (line.isBlank()) {
+                        problems += mutableListOf<Long>()
+                    } else {
+                        problems.last() += line.trim().toLong()
+                    }
+                    problems
+                }.mapToArray { it.toTypedArray() }
+        }
+
+    private fun calculate(filename: String, verbose: Boolean, parseNumbers: (List<String>) -> Array<Array<Long>>): Long {
+        val lines = filename.asPath().readLines()
+        val numbers = parseNumbers(lines.dropLast(1))
 
         val operators = lines.last()
             .let { line ->
@@ -38,10 +58,7 @@ class Day06 : Day {
                 else -> throw IllegalArgumentException("Unhandled operator")
             }
         }
-    }
 
-    override fun partTwo(filename: String, verbose: Boolean): Any {
-        TODO("Not yet implemented")
     }
 
     companion object : Day.Main("Day06.txt") {

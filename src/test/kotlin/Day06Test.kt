@@ -1,4 +1,4 @@
 class Day06Test : DayTest<Day06>("Day06_test.txt") {
     override val partOneExpected = 4277556L
-    override val partTwoExpected = null
+    override val partTwoExpected = 3263827L
 }
